@@ -1,11 +1,27 @@
 const http = require('http')
 
+const users = []
+
 const server = http.createServer((req, res) => {
     const { url, method } = req
 
-    console.log(url, method)
+    if (method === 'GET' && url === '/users') {
+        return res
+        .setHeader('Content-type', 'application/json')
+        .end(JSON.stringify(users))
+    }
 
-    return res.end('Hello ')
+    if (method === 'POST' && url === '/users') {
+        users.push({
+            id: 1,
+            name: 'John Doe',
+            email: 'johndoe@gmail.com'
+        })
+
+        return res.end('Criação de usuário')
+    }
+
+    return res.end('Hello')
 })
 
 server.listen(3333)
