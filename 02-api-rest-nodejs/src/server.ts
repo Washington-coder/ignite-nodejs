@@ -1,14 +1,10 @@
 import fastify from 'fastify'
-import { knex } from './database.js'
 import { env } from './env/index.js'
+import { transactionsRoutes } from './routes/transactions.js'
 
 const app = fastify()
 
-app.get('/hello', async () => {
-  const transactions = await knex('transactions').select('*')
-
-  return transactions
-})
+app.register(transactionsRoutes)
 
 // O listen no Fastify v4+ usa um objeto com a propriedade 'port'
 app.listen({ port: env.PORT }).then(() => {
