@@ -4,9 +4,9 @@ import { knex } from './database.js'
 const app = fastify()
 
 app.get('/hello', async () => {
-  const tables = await knex('sqlite_schema').select('*')
+  const transactions = await knex('transactions').select('*')
 
-  return tables
+  return transactions
 })
 
 // O listen no Fastify v4+ usa um objeto com a propriedade 'port'
