@@ -1,14 +1,21 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { app } from '../app.js'
 import request from 'supertest'
+import { knex } from '../database.js'
 
 describe('Transactions routes', () => {
   beforeAll(async () => {
+    await knex.migrate.latest()
     await app.ready()
   })
 
   afterAll(async () => {
+    await knex.destroy()
     await app.close()
+  })
+
+  beforeEach(async () => {
+    await knex('transactions').del()
   })
 
   it('user can create a new transaction', async () => {
