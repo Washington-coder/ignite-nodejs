@@ -1,4 +1,4 @@
-import { expect, describe, test, it } from 'vitest'
+import { expect, describe, test, it, beforeEach } from 'vitest'
 import { RegisterUseCase } from './register'
 import { PrismaUserRepository } from '@/repositories/prisma/prisma-users-repository'
 import { compare, hash } from 'bcryptjs'
@@ -7,11 +7,16 @@ import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 import { AuthenticateUseCase } from './authenticate'
 import { InvalidCredentialsError } from './errors/invalid-credentials-error'
 
-describe('Authenticate Use Case', () => {
-  it('should be able to authenticate', async () => {
-    const usersRepository = new InMemoryUsersRepository()
-    const sut = new AuthenticateUseCase(usersRepository)
+let usersRepository = new InMemoryUsersRepository()
+let sut = new AuthenticateUseCase(usersRepository)
 
+describe('Authenticate Use Case', () => {
+  beforeEach(() => {
+    usersRepository = new InMemoryUsersRepository()
+    sut = new AuthenticateUseCase(usersRepository)
+  })
+
+  it('should be able to authenticate', async () => {
     await usersRepository.create({
       name: 'John Doe',
       email: 'johndoe@example.com',
@@ -19,7 +24,6 @@ describe('Authenticate Use Case', () => {
     })
 
     const { user } = await sut.execute({
-      name: 'John Doe',
       email: 'johndoe@example.com',
       password: '123',
     })
@@ -28,9 +32,6 @@ describe('Authenticate Use Case', () => {
   })
 
   it('should be able to authenticate with wrong email', async () => {
-    const usersRepository = new InMemoryUsersRepository()
-    const sut = new AuthenticateUseCase(usersRepository)
-
     await expect(() =>
       sut.execute({
         email: 'johndoe@example.com',
@@ -40,9 +41,6 @@ describe('Authenticate Use Case', () => {
   })
 
   it('should be able to authenticate with wrong password', async () => {
-    const usersRepository = new InMemoryUsersRepository()
-    const sut = new AuthenticateUseCase(usersRepository)
-
     await usersRepository.create({
       name: 'John Doe',
       email: 'johndoe@example.com',
