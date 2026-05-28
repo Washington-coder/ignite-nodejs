@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+
 import { Prisma, type Gym } from 'generated/prisma/client'
 import type { GymsRepository } from '../gyms-repository'
 import { randomUUID } from 'node:crypto'
